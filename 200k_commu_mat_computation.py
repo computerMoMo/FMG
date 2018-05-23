@@ -356,7 +356,7 @@ def cal_rar_block(RA, nR, ind2rid, step=10000, topK=100):
         nR = 1005
         step, topK = 20, 10
         debug_RR = np.dot(RA, RA.T)
-        col_inds = bn.argpartsort(-debug_RR, topK, axis=1)[:,:topK]
+        col_inds = bn.argpartition(-debug_RR, topK, axis=1)[:,:topK]
         dr,dc = col_inds.shape
         row_inds = np.tile(np.arange(dr).reshape(dr,1), dc)
         debug_res = np.zeros((1005,1005))
@@ -384,7 +384,7 @@ def cal_rar_block(RA, nR, ind2rid, step=10000, topK=100):
             drc = dot_res.shape[1]
             tmp_topK = topK if topK < drc else drc
 
-            top100_inds = bn.argpartsort(-dot_res, tmp_topK, axis=1)[:,:tmp_topK]#10000 * 100,100 indices of the top K weights, column indices in dot_res
+            top100_inds = bn.argpartition(-dot_res, tmp_topK, axis=1)[:,:tmp_topK]#10000 * 100,100 indices of the top K weights, column indices in dot_res
             br, bc = top100_inds.shape
             top100_rows = np.tile(np.arange(br).reshape(br,1), bc)#number of colums = colums of top100 inds, usually =100
 
@@ -399,7 +399,7 @@ def cal_rar_block(RA, nR, ind2rid, step=10000, topK=100):
         b_top100_inds = np.concatenate(b_top100_inds, axis=1)
         b_top100_res = np.concatenate(b_top100_res, axis=1)
 
-        top100_inds = bn.argpartsort(-b_top100_res, topK, axis=1)[:,:topK]#10000 * 100,100 indices of the top K weights
+        top100_inds = bn.argpartition(-b_top100_res, topK, axis=1)[:,:topK]#10000 * 100,100 indices of the top K weights
         tr, tc = top100_inds.shape
         #it may exists that not all 100 weights are zero, prob is very small, processing later
         top100_rows = np.tile(np.arange(tr).reshape(tr,1), tc)

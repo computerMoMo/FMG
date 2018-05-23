@@ -119,7 +119,7 @@ class MF_BGD(object):
 
     def run(self):
         logger.info('MF running: parras: K=%s, reg=%s, lr=%s, silent_run=%s', self.K, self.lamb, self.eps, self.silent_run)
-        X = cm((self.data[:,2], (self.data[:,0], self.data[:,1]))) #index starting from 0
+        X = cm((self.data[:,2], (self.data[:,0].astype(np.int32), self.data[:,1].astype(np.int32)))) #index starting from 0
         M, N = X.shape
         omega = cm((self.train_data[:,2], (self.train_data[:,0], self.train_data[:,1])), shape=(M,N)) #index starting from 0
         if len(self.test_data):
