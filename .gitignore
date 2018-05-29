@@ -1,4 +1,3 @@
-data/*
 *.pyc
 baselines/*.txt
 baselines/*.dat
