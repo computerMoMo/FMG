@@ -6,5 +6,4 @@ log/*
 *pylint
 *pylints/*
 *test_scripts/*
-data
 .idea/
