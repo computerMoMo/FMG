@@ -16,7 +16,7 @@ bias: 0 # bias used in the FM model
 reg_W: 0.05 # regularization weight for W
 reg_P: 0.05 # regularization weight for P
 reg_Q: 0.05 # regularization weight for Q
-max_iters: 10000 # max iterations in the training process
+max_iters: 50 # max iterations in the training process
 ln: 1000 # max steps in line search
 eps: 1e-8 # stopping criteria
 eta: 1e-7 # initial step-size
