@@ -31,17 +31,20 @@ def run(path_str, comb='', K=10):
         sim_filename = dir_ + 'sim_res/path_count/combs/%s_%s_top%s.res' % (path_str, comb, topK)
     start_time = time.time()
     data = np.loadtxt(sim_filename)
-    uids = set(data[:,0].flatten())
-    bids = set(data[:,1].flatten())
-    uid2ind = {int(v):k for k,v in enumerate(uids)}
+    uids = set(data[:, 0].flatten())
+    bids = set(data[:, 1].flatten())
+    uid2ind = {int(v):k for k, v in enumerate(uids)}
+    # uid2ind = {v: int(k) for k, v in enumerate(uids)}
     ind2uid = reverse_map(uid2ind)
     bid2ind = {int(v):k for k,v in enumerate(bids)}
+    # bid2ind = {v: int(k) for k, v in enumerate(bids)}
     ind2bid = reverse_map(bid2ind)
 
-    data[:,0] = [uid2ind[int(r)] for r in data[:,0]]
-    data[:,1] = [bid2ind[int(r)] for r in data[:,1]]
+    data[:, 0] = [uid2ind[int(r)] for r in data[:, 0]]
+    data[:, 1] = [bid2ind[int(r)] for r in data[:, 1]]
 
     print 'finish load data from %s, cost %.2f seconds, users: %s, items=%s' % (sim_filename, time.time() - start_time, len(uids), len(bids))
+    print "data shape", data.shape, data.dtype
 
     eps, lamb, iters = 10, 10, 500
     print 'start generate mf features, (K, eps, reg, iters) = (%s, %s, %s, %s)' % (K, eps, lamb, iters)
@@ -87,14 +90,15 @@ def run(path_str, comb='', K=10):
     print 'Item-Features: %s  saved in %s, cost %.2f seconds' % (V.shape, wfilename, time.time() - start_time)
 
 def run_all_yelp():
-    for path_str in ['UPBCatB','UPBCityB', 'UPBStateB', 'UPBStarsB']:
-        run(path_str)
-    for path_str in ['UPBUB', 'UNBUB', 'URPARUB', 'URNARUB', 'UUB']:
-        run(path_str)
-    for path_str in ['URPSRUB', 'URNSRUB']:
-        run(path_str)
-    for path_str in ['ratings_only']:
-        run(path_str)
+    for path_str in ['UPBCatB', 'UPBCityB', 'UPBStateB', 'UPBStarsB']:
+        run("UPBPersonB")
+        break
+    # for path_str in ['UPBUB', 'UNBUB', 'URPARUB', 'URNARUB', 'UUB']:
+    #     run(path_str)
+    # for path_str in ['URPSRUB', 'URNSRUB']:
+    #     run(path_str)
+    # for path_str in ['ratings_only']:
+    #     run(path_str)
 
 def run_all_yelp_by_rank():
     for K in [2,3,5,20,30,40,50,100]:

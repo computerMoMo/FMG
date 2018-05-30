@@ -11,8 +11,10 @@ void setVal(double * input, double* output, int num) {
     //        k++;
     //    }
     //}
+//    printf("setVal function: num:%d \n",num);
     for (p = 0; p < num; p++) {
         output[p] = input[p];
     }
+//    printf("setVal over\n");
     return ;
 }

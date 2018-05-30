@@ -76,7 +76,7 @@ def cal_comm_mat_UBB(path_str):
     bid2ind = {v: k for k, v in enumerate(bids)}
     ind2bid = reverse_map(bid2ind)
 
-    upb_filename = os.path.join(data_dir, "tuples/user_rate_movie.txt")#positive rating
+    upb_filename = os.path.join(data_dir, "tuples/user_pos_movie.txt")#positive rating
     upb = np.loadtxt(upb_filename, dtype=str, delimiter="\t")
 
     # generate users items adjacency matrix
@@ -113,7 +113,7 @@ def cal_comm_mat_UUB(path_str):
 
     uid_filename = os.path.join(data_dir, "entity_ids/user_id.txt")
     bid_filename = os.path.join(data_dir, "entity_ids/movie_id.txt")
-    upb_filename = os.path.join(data_dir, "tuples/user_rate_movie.txt")
+    upb_filename = os.path.join(data_dir, "tuples/user_pos_movie.txt")
 
     print('cal commut mat for %s, filenames: %s, %s, %s' % (path_str, uid_filename, bid_filename, upb_filename))
 

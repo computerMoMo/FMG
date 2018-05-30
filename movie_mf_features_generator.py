@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 '''
-generate MF features from the meta-structure similarity
+    generate MF features from the meta-structure similarity
 '''
 from __future__ import print_function
 from mf import MF_BGD as MF
@@ -25,24 +25,30 @@ def run(path_str, K=10):
 
     sim_filename = os.path.join(data_dir, 'sim_res/path_count/%s.res' % path_str)
     if path_str == 'ratings_only':
-        sim_filename = os.path.join(data_dir, 'ratings.txt')
-    if use_topK:
+        sim_filename = os.path.join(data_dir, 'tuples/ratings.txt')
+    elif use_topK:
         sim_filename = os.path.join(data_dir, 'sim_res/path_count/%s_top%s.res' % (path_str, topK))
 
     start_time = time.time()
     data = np.loadtxt(sim_filename, dtype=np.str, delimiter="\t")
     uids = set(data[:, 0].flatten())
     bids = set(data[:, 1].flatten())
-    uid2ind = {v: k for k, v in enumerate(uids)}
+    # uid2ind = {v: k for k, v in enumerate(uids)}
+    uid2ind = {int(v): k for k, v in enumerate(uids)}
     ind2uid = reverse_map(uid2ind)
-    bid2ind = {v: k for k, v in enumerate(bids)}
+    # bid2ind = {v: k for k, v in enumerate(bids)}
+    bid2ind = {int(v): k for k, v in enumerate(bids)}
     ind2bid = reverse_map(bid2ind)
 
-    data[:, 0] = [uid2ind[r] for r in data[:, 0]]
-    data[:, 1] = [bid2ind[r] for r in data[:, 1]]
-    print('finish load data from %s, cost %.2f seconds, users: %s, items=%s' % (sim_filename, time.time() - start_time, len(uids), len(bids)))
+    data[:, 0] = [uid2ind[int(r)] for r in data[:, 0]]
+    data[:, 1] = [bid2ind[int(r)] for r in data[:, 1]]
 
-    data = data.astype(dtype=np.int32)
+    # data[:, 0] = [uid2ind[r] for r in data[:, 0]]
+    # data[:, 1] = [bid2ind[r] for r in data[:, 1]]
+
+    print('finish load data from %s, cost %.2f seconds, users: %s, items=%s' % (sim_filename, time.time() - start_time, len(uids), len(bids)))
+    # must convert data type to float
+    data = data.astype(dtype=np.float)
     print("data shape: ", data.shape, data.dtype)
 
     eps, lamb, iters = 10, 10, 500
@@ -70,7 +76,7 @@ def run(path_str, K=10):
     start_time = time.time()
     wfilename = os.path.join(data_dir, 'mf_features/path_count/%s_item.dat' % (path_str))
     if use_topK:
-        wfilename = os.path.join(data_dir,'mf_features/path_count/%s_top%s_item.dat' % (path_str, topK))
+        wfilename = os.path.join(data_dir, 'mf_features/path_count/%s_top%s_item.dat' % (path_str, topK))
 
     fw = open(wfilename, 'w+')
     res = []
@@ -86,9 +92,19 @@ def run(path_str, K=10):
 
 
 def run_movie():
-    for path_str in ['UPBTypeB', 'UPBPersonB']:
+    print("run start...")
+
+    for path_str in ['UPBPersonB', 'UPBTypeB']:
         run(path_str)
-        break
+        # break
+
+    for path_str in ['UPBUB', 'UNBUB']:
+        run(path_str)
+
+    for path_str in ['ratings_only']:
+        run(path_str)
+
+    print("run over")
 
 
 if __name__ == '__main__':

@@ -87,26 +87,37 @@ def cal_comm_mat_UBB(path_str):
         calculate the commuting matrix in U-B-*-B style
         in fact, only need to calculate BB
     '''
-    uid_filename = dir_ + 'uids.txt'
+
+    print "path str:", path_str
+
+    uid_filename = dir_ + 'uids.txt'#users
     print 'run cal_comm_mat_samples for 10k users in ', uid_filename
     lines = open(uid_filename, 'r').readlines()
     uids = [int(l.strip()) for l in lines]
     uid2ind = {v:k for k,v in enumerate(uids)}
     ind2uid = reverse_map(uid2ind)
 
-    bid_filename = dir_ + 'bids.txt'
+    bid_filename = dir_ + 'bids.txt'#items
     lines = open(bid_filename, 'r').readlines()
     bids = [int(l.strip()) for l in lines]
     bid2ind = {v:k for k,v in enumerate(bids)}
     ind2bid = reverse_map(bid2ind)
 
-    upb_filename = dir_ + 'uid_pos_bid.txt'
+    upb_filename = dir_ + 'uid_pos_bid.txt'# positive rating
     upb = np.loadtxt(upb_filename, dtype=int)
+
+    # generate users items adjacency matrix
     adj_ub, adj_ub_t = generate_adj_mat(upb, uid2ind, bid2ind)
 
+    # print uid2ind[640698], bid2ind[51874]
+    # print type(adj_ub), adj_ub.toarray()[uid2ind[640698]][bid2ind[51874]], adj_ub.toarray().shape
+    # print type(adj_ub_t), adj_ub_t.toarray()[bid2ind[51874]][uid2ind[640698]], adj_ub_t.toarray().shape
+
+    # generate items object adjacency matrix (cat, state, city, star)
     adj_bo, adj_bo_t = get_bo(path_str, bid2ind)
 
     t1 = time.time()
+    # compute u-> b -> o(cat,city) <- b
     comm_res = cal_mat_ubb(path_str, adj_ub, adj_bo, adj_bo_t)
 
     t2 = time.time()
@@ -115,6 +126,7 @@ def cal_comm_mat_UBB(path_str):
     K = 500
     wfilename = dir_ + 'sim_res/path_count/%s_top%s.res' % (path_str, K)
     triplets = get_topK_items(comm_res, ind2uid, ind2bid, topK=K)
+
     save_triplets(wfilename, triplets)
     #batch_save_comm_res(path_str, wfilename, comm_res, ind2uid, ind2bid)
     t3 = time.time()
@@ -124,6 +136,8 @@ def cal_comm_mat_UUB(path_str, cikm=False):
     '''
         calculate commuting matrix for U-*-U-pos-B style
     '''
+    print "path str:", path_str
+
     uid_filename = dir_ + 'uids.txt'
     bid_filename = dir_ + 'bids.txt'
     upb_filename = dir_ + 'uid_pos_bid.txt'
@@ -451,13 +465,16 @@ def cal_yelp_all(split_num, dt):
 
     for path_str in ['UPBCatB','UPBCityB', 'UPBStateB', 'UPBStarsB']:
         cal_comm_mat_UBB(path_str)
+        break
 
     for path_str in ['UPBUB', 'UNBUB', 'URPARUB', 'URNARUB', 'UUB']:
         cal_comm_mat_UUB(path_str)
+        break
 
     for path_str in ['URPSRUB', 'URNSRUB']:
         cal_rar(path_str)
         cal_comm_mat_USUB(path_str)
+        break
 
 if __name__ == '__main__':
     if len(sys.argv) == 4:

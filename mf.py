@@ -2,21 +2,19 @@
 '''
     solve the matrix factorization by block gradient descent, which can be applied to large scale datasets
 '''
+from scipy.sparse import csr_matrix as cm
+from numpy.linalg import norm
+from numpy.linalg import svd
+from numpy import power
+from logging_util import init_logger
+
 import time
 import ctypes
 import itertools
 import sys
 import logging
-
 import numpy as np
-from scipy.sparse import csr_matrix as cm
-from numpy.linalg import norm
-from numpy.linalg import svd
-from numpy import power
-
-import matplotlib.pyplot as plt
-
-from logging_util import init_logger
+import copy
 
 
 def print_cost(func):
@@ -26,6 +24,7 @@ def print_cost(func):
         print '%s: %.1fs' % (func.__name__, time.time() - t)
         return res
     return wrapper
+
 
 class MF_BGD(object):
 
@@ -100,10 +99,12 @@ class MF_BGD(object):
 
     def cal_omega(self, omega, U, V, rows, cols, bias, obs):
         puv = self.part_uv(U, V, rows, cols, self.K)
-        puv = obs - puv -  bias
+        puv = obs - puv - bias
+        # print puv.shape, omega.shape, self.train_num
         puvp = puv.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
         odp = omega.data.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
         nc = ctypes.c_int(self.train_num)
+        # print puvp, odp, nc
         self.set_val(puvp, odp, nc)
 
     def obj(self, U, V, omega):
@@ -119,20 +120,26 @@ class MF_BGD(object):
 
     def run(self):
         logger.info('MF running: parras: K=%s, reg=%s, lr=%s, silent_run=%s', self.K, self.lamb, self.eps, self.silent_run)
-        X = cm((self.data[:,2], (self.data[:,0].astype(np.int32), self.data[:,1].astype(np.int32)))) #index starting from 0
+        X = cm((self.data[:, 2], (self.data[:, 0].astype(np.int32), self.data[:, 1].astype(np.int32)))) #index starting from 0
         M, N = X.shape
+        # print X.shape
+
         omega = cm((self.train_data[:,2], (self.train_data[:,0], self.train_data[:,1])), shape=(M,N)) #index starting from 0
+        # print omega.shape
+
         if len(self.test_data):
             trows, tcols = self.test_data[:,0].astype(np.int32), self.test_data[:,1].astype(np.int32)
 
         U = np.random.rand(M, self.K) * 0.0002
         V = np.random.rand(N, self.K) * 0.0002
-        bias = self.train_data[:,2].mean()# in reality, bias can also be updated, modified later
-        #bias = 0.0
+        bias = self.train_data[:, 2].mean()# in reality, bias can also be updated, modified later
+        # bias = 0.0
+        # print bias
         eps_1 = eps_2 = self.eps
 
         rows, cols = omega.tocoo().row.astype(np.int32), omega.tocoo().col.astype(np.int32)
         obs = omega.copy().data.astype(np.float64).reshape(self.train_num, 1)
+        # print type(obs)
         self.cal_omega(omega, U, V, rows, cols, bias, obs)
 
         objs_1 = [self.obj(U, V, omega)]
@@ -141,14 +148,18 @@ class MF_BGD(object):
         rmses, maes, costs, acu_cost = [], [], [], []
 
         run_start = time.time()
+        # print "start run..."
         for rnd in range(0, self.ite):
+            if rnd % 50 == 0:
+                print "rnd", rnd
             start = time.time()
             self.cal_omega(omega, U, V, rows, cols, bias, obs)
             #grad_bias = -omega + self.lamb * bias
             #bias = bias - 1.0/eps_1 * grad_bias
             du, dv = self.get_grad(omega, U, V)
             l_omega = omega.copy()
-            for t1 in range(0, 20):
+            temp_max_t1 = 100
+            for t1 in range(0, temp_max_t1):
                 #line search
                 LU = U - 1.0/eps_1 * du
                 LV = V - 1.0/eps_1 * dv
@@ -163,7 +174,7 @@ class MF_BGD(object):
                 else:
                     eps_1 *= 1.5
 
-            if t1 == 19:
+            if t1 == temp_max_t1-1:
                 break
 
             lrate = (objs_1[rnd] - objs_1[rnd+1]) / objs_1[rnd]
