@@ -325,3 +325,10 @@ class FMAKGL(object):
         np.savetxt(P_wfilename, P)
         logging.info('W and P saved in %s and %s', W_wfilename, P_wfilename)
 
+    def predict(self, W_file_name, P_file_name):
+        W = np.loadtxt(W_file_name, dtype=np.float)
+        P = np.loadtxt(P_file_name, dtype=np.float)
+        WtX, tXP, tXSPS = self._get_XC_prods(self.test_X, W, P)
+        Y_t = self.bias + WtX + 0.5 * (np.square(tXP) - tXSPS).sum(axis=1)
+        # print Y_t.shape
+        return Y_t

@@ -98,12 +98,19 @@ def run_glasso(config, data_loader):
     logging.info('******\n%s\n******', config)
     run_start = time.time()
     fm_ak_gl = FMAKGL(config, data_loader)
-    fm_ak_gl.train()
-    rmses, maes = fm_ak_gl.get_eval_res()
-    cost = (time.time() - run_start) / 3600.0
-    logging.info('******config*********\n%s\n******', config)
-    logging.info('**********fm_anova_kernel_glasso finish, run once, cost %.2f hours*******\n, rmses: %s, maes: %s\navg rmse=%s, avg mae=%s\n***************', cost, rmses[-5:], maes[-5:], np.mean(rmses[-5:]), np.mean(maes[-5:]))
-
+    if config["test"] == 0:
+        fm_ak_gl.train()
+        rmses, maes = fm_ak_gl.get_eval_res()
+        cost = (time.time() - run_start) / 3600.0
+        logging.info('******config*********\n%s\n******', config)
+        logging.info('**********fm_anova_kernel_glasso finish, run once, cost %.2f hours*******\n, rmses: %s, maes: %s\navg rmse=%s, avg mae=%s\n***************', cost, rmses[-5:], maes[-5:], np.mean(rmses[-5:]), np.mean(maes[-5:]))
+    else:
+        W_wfilename = config["test_W_file_name"]
+        P_wfilename = config["test_P_file_name"]
+        print "test use W file:", W_wfilename, " P file:", P_wfilename
+        predict_res = fm_ak_gl.predict(W_wfilename, P_wfilename)
+        print predict_res.shape
+        np.savetxt(config["test_res_save_path"], predict_res)
 
 def run_vary_mg(config):
     '''
