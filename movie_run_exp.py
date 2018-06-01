@@ -137,8 +137,12 @@ def run_vary_mg(config):
 def run_vary_reg(config, data_loader):
 
     # for reg in [1e-5, 1e-4, 1e-3, 0.01, 0.05, 0.1, 0.5, 1.0, 10.0, 100.0]:
-    for reg in [1e-5, 0.05, 0.5, 10.0]:
-        config['reg_W'] = config['reg_P'] = config['reg_Q'] = reg
+    if config["test"] == 0:
+        for reg in [1e-5, 0.05, 0.5, 10.0]:
+            config['reg_W'] = config['reg_P'] = config['reg_Q'] = reg
+            run_glasso(config, data_loader)
+    else:
+        config['reg_W'] = config['reg_P'] = config['reg_Q'] = config["test_reg"]
         run_glasso(config, data_loader)
 
 
