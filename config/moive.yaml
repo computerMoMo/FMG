@@ -16,14 +16,14 @@ bias: 0 # bias used in the FM model
 reg_W: 0.05 # regularization weight for W
 reg_P: 0.05 # regularization weight for P
 reg_Q: 0.05 # regularization weight for Q
-max_iters: 50 # max iterations in the training process
+max_iters: 200 # max iterations in the training process
 ln: 1000 # max steps in line search
 eps: 1e-8 # stopping criteria
 eta: 1e-7 # initial step-size
 solver: nmAPG
 bias_eta: 1e-7 # fixed stepsize for bias
 
-test: 1
+test: 0
 test_reg: 0.05
 test_W_file_name: fm_res/movie_split1_W_0.05_exp1527670606.txt
 test_P_file_name: fm_res/movie_split1_P_0.05_exp1527670606.txt
