@@ -22,10 +22,13 @@ class DataLoader(object):
         self.N = config.get('N')
         self.F = config.get('F')
         self.L = config.get('L')
-        if config.get('dt') == 'synthetic':
-            self._load_random_data()
+        if config["test"] == 0:
+            if config.get('dt') == 'synthetic':
+                self._load_random_data()
+            else:
+                self._load()
         else:
-            self._load()
+            self._load_test_data()
 
     def _load_random_data(self):
         self.train_X = np.loadtxt(self.data_dir + self.config.get('train_X'))
@@ -116,3 +119,37 @@ class DataLoader(object):
     def get_exp_data(self):
         return self.train_X, self.train_Y, self.test_X, self.test_Y
 
+    def _load_test_data(self):
+        start_time = time.time()
+
+        # train_data = np.loadtxt(self.data_dir + self.train_filename)
+        test_data = np.loadtxt(self.data_dir + self.config["test_file_path"])
+        # train_num = train_data.shape[0]
+        test_num = test_data.shape[0]
+
+        uid2reps, bid2reps = self._load_representation()
+
+        # self.train_X = np.zeros((train_num, self.N))
+        # self.train_Y = train_data[:, 2]
+        self.test_X = np.zeros((test_num, self.N))
+        self.test_Y = test_data[:, 2]
+
+        # ind = 0
+        # for u, b, _ in train_data:
+        #     ur = uid2reps[int(u)]
+        #     br = bid2reps[int(b)]
+        #     self.train_X[ind] = np.concatenate((ur, br))
+        #     ind += 1
+        # X_sparsity = np.count_nonzero(self.train_X) * 1.0 / self.train_X.size
+
+        ind = 0
+        for u, b, _ in test_data:
+            ur = uid2reps.get(int(u), np.zeros(self.N / 2))
+            br = bid2reps.get(int(b), np.zeros(self.N / 2))
+            self.test_X[ind] = np.concatenate((ur, br))
+            ind += 1
+
+        test_X_sparsity = np.count_nonzero(self.test_X) * 1.0 / self.test_X.size
+
+        self.train_X = None
+        self.train_Y = None
