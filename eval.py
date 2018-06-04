@@ -56,7 +56,7 @@ if __name__ == "__main__":
             ground_list = []
             for item in temp_list:
                 pre_list.append(float(item[-1]))
-                ground_list.append(float(item[-1]))
+                ground_list.append(float(item[-2]))
 
             temp_hit = []
             temp_ndcg = []
