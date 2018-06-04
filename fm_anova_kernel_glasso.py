@@ -35,10 +35,13 @@ class FMAKGL(object):
         self.eta = self.config.get('eta')
         self.solver = self.config.get('solver')
         self.bias_eta = self.config.get('eta')
-        self.bias = np.mean(self.train_Y)
+        if self.config["test"] == 0:
+            self.bias = np.mean(self.train_Y)
+        else:
+            self.bias = 0
         #better to add log information for the configs
-
-        self.M = self.train_X.shape[0]
+        if self.config["test"] == 0:
+            self.M = self.train_X.shape[0]
 
     def _prox_op(self, eta, G, g_inds):
         for i in range(len(g_inds)):
