@@ -4,12 +4,12 @@ import codecs
 if __name__ == "__main__":
     file_reader = codecs.open("user_rate_movie_test.txt", mode="r", encoding="utf-8")
     pair_nums = 299411
-    split_num = pair_nums/5
+    split_num = int(pair_nums/5)
     line = ""
+    line = file_reader.readline()
     for i in range(4):
         file_writer = codecs.open("user_rate_movie_part_"+str(i)+".txt", mode="w", encoding="utf-8")
         temp_num = 0
-        line = file_reader.readline()
         while line:
             file_writer.write(line)
             line = file_reader.readline()
