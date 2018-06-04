@@ -39,12 +39,12 @@ def eval_one_rating(i_gnd, i_pre, K):
 if __name__ == "__main__":
     file_path = "fm_res/predict_res_total.txt"
     file_reader = codecs.open(file_path, mode="r", encoding="utf-8")
-    head_line = file_reader.readline()
-    line = file_reader.readline()
     count_num = 0
     temp_list = []
     total_hit_res = []
     total_ndcg_res = []
+
+    line = file_reader.readline()
     while line:
         line_list = line.strip().split("\t")
         count_num += 1
