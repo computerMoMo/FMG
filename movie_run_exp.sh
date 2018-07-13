@@ -14,4 +14,13 @@ do
         python movie_run_exp.py config/yelp-50k.yaml -reg 0.5 -test_file_path $test_file_name \
         -test_res_save_path $test_res_name
     done
+    echo "combine result"
+    total_result_name="fm_res/"$file_id".res"
+    part_res_name=""
+    for i in {0..4}
+    do
+        part_res_name=$part_res_name"data/movie/tuples/test_result/"$file_id"_part_"$i".res "
+    done
+    cat $part_res_name > $total_result_name
+    break
 done
