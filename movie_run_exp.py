@@ -30,6 +30,8 @@ def get_args():
     parser.add_argument('-bias_eta', help='learning rate for bias', type=float)
     parser.add_argument('-initial', help='initialization of random starting', type=float)
     parser.add_argument('config',  help='specify the config file')
+    parser.add_argument('-test_file_path', type=str)
+    parser.add_argument('-test_res_save_path', type=str)
     return parser.parse_args()
 
 
@@ -111,6 +113,7 @@ def run_glasso(config, data_loader):
         predict_res = fm_ak_gl.predict(W_wfilename, P_wfilename)
         print predict_res.shape
         np.savetxt(config["test_res_save_path"], predict_res)
+
 
 def run_vary_mg(config):
     '''
