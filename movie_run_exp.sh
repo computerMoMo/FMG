@@ -11,7 +11,7 @@ do
         test_file_name="tuples/sample_test_data/"$file_id"_part_"$i".txt"
         test_res_name="data/movie/tuples/test_result/"$file_id"_part_"$i".res"
         echo "test file "$test_file_name
-        python movie_run_exp.py config/yelp-50k.yaml -reg 0.5 -test_file_path $test_file_name \
+        python movie_run_exp.py config/movie.yaml -reg 0.5 -test_file_path $test_file_name \
         -test_res_save_path $test_res_name
     done
     echo "combine result"
@@ -22,5 +22,4 @@ do
         part_res_name=$part_res_name"data/movie/tuples/test_result/"$file_id"_part_"$i".res "
     done
     cat $part_res_name > $total_result_name
-    break
 done
