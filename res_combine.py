@@ -5,14 +5,13 @@ import codecs
 import sys
 
 if __name__ == "__main__":
-    split_num = int(sys.argv[1])
-    res_path = "fm_res/movie_part_"+str(split_num)+".res"
+    res_path = sys.argv[1]
     res_array = np.loadtxt(res_path, dtype=np.float)
 
     print(res_array.shape)
 
-    test_file_path = "data/movie/tuples/"+"user_rate_movie_part_"+str(split_num)+".txt"
-    test_res_path = "fm_res/predict_res_part_"+str(split_num)+".txt"
+    test_file_path = sys.argv[2]
+    test_res_path = sys.argv[3]
     file_reader = codecs.open(test_file_path, mode="r", encoding="utf-8")
     file_writer = codecs.open(test_res_path, mode="w", encoding="utf-8")
     line = file_reader.readline()

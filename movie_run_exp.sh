@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-test_file_array=("0.2" "0.4" "0.6" "0.8" "1.0")
+test_file_array=("0.0" "0.2" "0.4" "0.6" "0.8" "1.0")
 for file_id in ${test_file_array[@]}
 do
     file_name="user_item_test_"$file_id".txt"

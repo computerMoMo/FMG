@@ -58,3 +58,22 @@ One may read the comment in files in directory config for more information.
 ## Misc
 If you have any questions about this project, **you can open issues**, thus it can help more people who are interested in this project.
 I will reply to your issues as soon as possible.
+
+
+# RUN FMG Movie
+## Train
+```bash
+mkdir fm_res
+mkdir log
+python movie_commu_mat_computation.py 
+python movie_mf_features_generator.py movie all 1
+gcc -fPIC --shared setVal.c -o setVal.so
+gcc -fPIC --shared partXY.c -o partXY.so
+python python movie_run_exp.py config/movie.yaml -reg 0.5
+```
+
+## Test
+```bash
+bash movie_run_exp.sh
+bash res_combine.sh
+```

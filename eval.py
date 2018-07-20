@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import heapq
+import sys
 
 
 def get_hit_ratio(rank_list, target_item):
@@ -37,8 +38,9 @@ def eval_one_rating(i_gnd, i_pre, K):
 
 
 if __name__ == "__main__":
-    file_path = "fm_res/predict_res_total.txt"
+    file_path = sys.argv[1]
     file_reader = codecs.open(file_path, mode="r", encoding="utf-8")
+    head_line = file_reader.readline()
     count_num = 0
     temp_list = []
     total_hit_res = []
@@ -88,7 +90,7 @@ if __name__ == "__main__":
     print("hit score:", hit_average)
     print("ndcg score:", ndcg_average)
 
-    score_writer = codecs.open("eval_res.txt", mode="w", encoding="utf-8")
-    score_writer.write("\t".join(hit_average) + "\n")
-    score_writer.write("\t".join(ndcg_average) + "\n")
+    score_writer = codecs.open(sys.argv[2], mode="w", encoding="utf-8")
+    score_writer.write("hit score:"+"\t".join(hit_average) + "\n")
+    score_writer.write("ndcg score:" + "\t".join(ndcg_average) + "\n")
     score_writer.close()
