@@ -61,7 +61,7 @@ I will reply to your issues as soon as possible.
 
 
 # RUN FMG Movie
-## Train
+## Features Generate
 ```bash
 mkdir fm_res
 mkdir log
@@ -69,6 +69,9 @@ python movie_commu_mat_computation.py
 python movie_mf_features_generator.py movie all 1
 gcc -fPIC --shared setVal.c -o setVal.so
 gcc -fPIC --shared partXY.c -o partXY.so
+```
+## Train
+```bash
 python python movie_run_exp.py config/movie.yaml -reg 0.5
 ```
 
