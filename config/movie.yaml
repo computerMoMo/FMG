@@ -27,5 +27,5 @@ test: 1
 test_reg: 0.05
 test_W_file_name: fm_res/movie_split1_W_0.05_exp1527845810.txt
 test_P_file_name: fm_res/movie_split1_P_0.05_exp1527845810.txt
-test_res_save_path: fm_res/movie_split1_0.05.res
-test_file_path:
+test_res_save_path: fm_res/movie_part_4.res
+test_file_path: tuples/user_rate_movie_part_4.txt
